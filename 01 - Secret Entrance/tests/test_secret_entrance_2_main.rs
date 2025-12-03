@@ -3,21 +3,23 @@ use std::io::Write;
 
 #[test]
 fn test_that_the_executable_exists() {
-    let exe = env!("CARGO_BIN_EXE_secret_entrance");
-    assert_eq!(true, std::fs::exists(exe).unwrap());
+    let exe = env!("CARGO_BIN_EXE_secret_entrance_2");
+    assert_eq!(true, std::fs::exists(exe).unwrap(), "{exe}");
 }
 
 #[test]
 fn test_that_the_executable_processes_the_rotations_and_outputs_the_passcode() {
     for (input, expected_result) in [
         ("", "0\n"),
-        ("L68\n", "0\n"),
-        ("L68\nL30\nR48\n", "1\n"),
-        ("L68\nL30\nR48\nL5\nR60\nL55\nL1\n", "2\n"),
-        ("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82\n", "3\n"),
+        ("L68\n", "1\n"),
+        ("L68\nL30\nR48\n", "2\n"),
+        ("L68\nL30\nR48\nL5\nR60\n", "3\n"),
+        ("L68\nL30\nR48\nL5\nR60\nL55\n", "4\n"),
+        ("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\n", "5\n"),
+        ("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82\n", "6\n"),
     ] {
         // special env var at compile time:
-        let exe = env!("CARGO_BIN_EXE_secret_entrance");
+        let exe = env!("CARGO_BIN_EXE_secret_entrance_2");
 
         let mut child = std::process::Command::new(exe)
             .stdin(std::process::Stdio::piped())

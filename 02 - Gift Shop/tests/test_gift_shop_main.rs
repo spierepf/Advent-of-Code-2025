@@ -4,14 +4,18 @@ use std::io::Write;
 #[test]
 fn test_that_the_level_one_executable_exists() {
     let exe = env!("CARGO_BIN_EXE_gift_shop");
-    assert_eq!(true, std::fs::exists(exe).unwrap());
+    assert_eq!(true, std::fs::exists(exe).unwrap(), "{exe}");
 }
 
+#[test]
+fn test_can_use_add_fuction_from_toolbox() {
+    assert_eq!(toolbox::add(1, 2), 3);
+}
 
 #[test]
 fn test_that_the_level_two_executable_exists() {
     let exe = env!("CARGO_BIN_EXE_gift_shop_2");
-    assert_eq!(true, std::fs::exists(exe).unwrap());
+    assert_eq!(true, std::fs::exists(exe).unwrap(), "{exe}");
 }
 
 
