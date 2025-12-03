@@ -1,3 +1,6 @@
+use std::io::Read;
+use std::io::Write;
+
 #[macro_export]
 macro_rules! binary_path {
     ( $path:literal ) => {
@@ -5,17 +8,27 @@ macro_rules! binary_path {
     };
 }
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub fn invoke_executable(path: &str, input: &str) -> String {
+    let mut child = std::process::Command::new(path)
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+        .expect(&format!("failed to run {}", path));
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+    let mut child_stdin = child.stdin.take().unwrap();
+    let mut child_stdout = child.stdout.take().unwrap();
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+    write!(&mut child_stdin, "{input}").expect("failed to write to child");
+
+    drop(child_stdin);
+
+    let mut child_output = String::new();
+    (&mut child_stdout)
+        .read_to_string(&mut child_output)
+        .expect("failed to read child output");
+
+    let res = child.wait().expect("failed to wait for child");
+    assert!(res.success());
+
+    child_output
 }
