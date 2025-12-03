@@ -2,4 +2,5 @@
 resolver = "3"
 members = [
     "aoc_01_secret_entrance",
+    "aoc_02_gift_shop",
 ]
