@@ -55,7 +55,7 @@ fn test_that_the_level_one_executable_processes_the_input_and_provides_thw_corre
         ),
     ] {
         // special env var at compile time:
-        let exe = env!("CARGO_BIN_EXE_gift_shop");
+        let exe = toolbox::binary_path!("gift_shop");
         let child_output = run_executable_with_input_and_capture_output(exe, input);
         assert_eq!(child_output, expected_result);
     }
@@ -75,7 +75,7 @@ fn test_that_the_level_two_executable_processes_the_input_and_provides_thw_corre
         ),
     ] {
         // special env var at compile time:
-        let exe = env!("CARGO_BIN_EXE_gift_shop_2");
+        let exe = toolbox::binary_path!("gift_shop_2");
         let child_output = run_executable_with_input_and_capture_output(exe, input);
         assert_eq!(child_output, expected_result);
     }

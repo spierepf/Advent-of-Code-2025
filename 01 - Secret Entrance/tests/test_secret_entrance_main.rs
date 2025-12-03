@@ -16,7 +16,7 @@ fn test_that_the_executable_processes_the_rotations_and_outputs_the_passcode() {
         ("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82\n", "3\n"),
     ] {
         // special env var at compile time:
-        let exe = env!("CARGO_BIN_EXE_secret_entrance");
+        let exe = toolbox::binary_path!("secret_entrance");
 
         let mut child = std::process::Command::new(exe)
             .stdin(std::process::Stdio::piped())
