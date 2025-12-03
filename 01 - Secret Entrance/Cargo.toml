@@ -10,3 +10,6 @@ name = "secret_entrance"
 
 [[bin]]
 name = "secret_entrance_2"
+
+[dev-dependencies]
+toolbox = { path = "../toolbox" }

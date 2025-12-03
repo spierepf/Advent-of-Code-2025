@@ -3,8 +3,7 @@ use std::io::Write;
 
 #[test]
 fn test_that_the_executable_exists() {
-    let exe = env!("CARGO_BIN_EXE_secret_entrance_2");
-    assert_eq!(true, std::fs::exists(exe).unwrap(), "{exe}");
+    assert!(std::fs::exists(toolbox::binary_path!("secret_entrance_2")).unwrap());
 }
 
 #[test]

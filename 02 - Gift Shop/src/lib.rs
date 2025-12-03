@@ -118,7 +118,6 @@ impl ProductIdValidator for LevelOneProductIdValidator {
     }
 }
 
-
 #[test]
 #[rustfmt::skip]
 fn we_can_sum_level_one_invalid_product_ids_in_a_range() {
@@ -149,19 +148,34 @@ impl ProductIdRange {
 
 #[test]
 fn can_sum_all_level_one_invalid_product_ids_from_buf_read() {
-    assert_eq!(sum_all_invalid_product_ids_from_input::<LevelOneProductIdValidator>(&mut std::io::Cursor::new("".as_bytes())), 0);
-    assert_eq!(sum_all_invalid_product_ids_from_input::<LevelOneProductIdValidator>(&mut std::io::Cursor::new("11-22".as_bytes())), 33);
+    assert_eq!(
+        sum_all_invalid_product_ids_from_input::<LevelOneProductIdValidator>(
+            &mut std::io::Cursor::new("".as_bytes())
+        ),
+        0
+    );
+    assert_eq!(
+        sum_all_invalid_product_ids_from_input::<LevelOneProductIdValidator>(
+            &mut std::io::Cursor::new("11-22".as_bytes())
+        ),
+        33
+    );
 
     assert_eq!(sum_all_invalid_product_ids_from_input::<LevelOneProductIdValidator>(&mut std::io::Cursor::new("11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124"
         .as_bytes())), 1227775554);
 }
 
-pub fn sum_all_invalid_product_ids_from_input<V: ProductIdValidator>(input: &mut dyn std::io::Read) -> u64 {
+pub fn sum_all_invalid_product_ids_from_input<V: ProductIdValidator>(
+    input: &mut dyn std::io::Read,
+) -> u64 {
     let mut all_input = String::new();
     input.read_to_string(&mut all_input).unwrap();
     let ranges = parse_comma_separated_list_of_product_id_ranges(all_input.trim())
         .expect("failed to parse product id ranges");
-    ranges.iter().map(ProductIdRange::sum_invalid_product_ids::<V>).sum()
+    ranges
+        .iter()
+        .map(ProductIdRange::sum_invalid_product_ids::<V>)
+        .sum()
 }
 
 pub struct LevelTwoProductIdValidator;
@@ -172,7 +186,7 @@ impl ProductIdValidator for LevelTwoProductIdValidator {
 
         let count = back_again.len();
 
-        for i in 1..=count/2 {
+        for i in 1..=count / 2 {
             let mut chunks = back_again.as_bytes().chunks(i);
             let first_chunk = chunks.next().unwrap();
             if chunks.all(|other| first_chunk == other) {
@@ -222,8 +236,18 @@ fn we_can_sum_level_two_invalid_product_ids_in_a_range() {
 
 #[test]
 fn can_sum_all_level_two_invalid_product_ids_from_buf_read() {
-    assert_eq!(sum_all_invalid_product_ids_from_input::<LevelTwoProductIdValidator>(&mut std::io::Cursor::new("".as_bytes())), 0);
-    assert_eq!(sum_all_invalid_product_ids_from_input::<LevelTwoProductIdValidator>(&mut std::io::Cursor::new("11-22".as_bytes())), 33);
+    assert_eq!(
+        sum_all_invalid_product_ids_from_input::<LevelTwoProductIdValidator>(
+            &mut std::io::Cursor::new("".as_bytes())
+        ),
+        0
+    );
+    assert_eq!(
+        sum_all_invalid_product_ids_from_input::<LevelTwoProductIdValidator>(
+            &mut std::io::Cursor::new("11-22".as_bytes())
+        ),
+        33
+    );
 
     assert_eq!(sum_all_invalid_product_ids_from_input::<LevelTwoProductIdValidator>(&mut std::io::Cursor::new("11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124"
         .as_bytes())), 4174379265);

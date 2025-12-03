@@ -12,6 +12,9 @@ dependencies = [
 [[package]]
 name = "secret_entrance"
 version = "0.1.0"
+dependencies = [
+ "toolbox",
+]
 
 [[package]]
 name = "toolbox"
