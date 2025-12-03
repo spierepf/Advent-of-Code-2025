@@ -1,5 +1,3 @@
-use std::io::Read;
-use std::io::Write;
 const EXECUTABLE_UNDER_TEST: &str = toolbox::binary_path!("secret_entrance_2");
 
 const TEST_CASES: &[(&str, &str)] = &[

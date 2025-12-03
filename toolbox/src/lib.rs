@@ -13,7 +13,7 @@ pub fn invoke_executable(path: &str, input: &str) -> String {
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .spawn()
-        .expect(&format!("failed to run {}", path));
+        .unwrap_or_else(|_| panic!("failed to run {}", path));
 
     let mut child_stdin = child.stdin.take().unwrap();
     let mut child_stdout = child.stdout.take().unwrap();
@@ -23,7 +23,7 @@ pub fn invoke_executable(path: &str, input: &str) -> String {
     drop(child_stdin);
 
     let mut child_output = String::new();
-    (&mut child_stdout)
+    child_stdout
         .read_to_string(&mut child_output)
         .expect("failed to read child output");
 

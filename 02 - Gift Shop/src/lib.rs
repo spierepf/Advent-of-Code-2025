@@ -83,7 +83,7 @@ pub fn parse_comma_separated_list_of_product_id_ranges(
 ) -> Result<Vec<ProductIdRange>, ParseProductIdRangeError> {
     input
         .split_terminator(',')
-        .map(|s| ProductIdRange::from_str(s))
+        .map(ProductIdRange::from_str)
         .collect()
 }
 

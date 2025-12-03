@@ -24,11 +24,11 @@ impl FromStr for Rotation {
         let skip_first_letter = &s[1..];
         let rotate_amount = skip_first_letter.parse()?;
 
-        return match first_letter {
+        match first_letter {
             'L' => Ok(Rotation::Left(rotate_amount)),
             'R' => Ok(Rotation::Right(rotate_amount)),
             _ => Err(ParseRotationError),
-        };
+        }
     }
 }
 
@@ -293,9 +293,9 @@ pub fn calculate_password(input: &mut dyn std::io::BufRead) -> u32 {
             let rotation = line.parse::<Rotation>().expect("failed to parse rotation");
             let new_dial = dial.rotate(rotation);
             if new_dial == Dial(0) {
-                return (new_dial, count + 1);
+                (new_dial, count + 1)
             } else {
-                return (new_dial, count);
+                (new_dial, count)
             }
         })
         .1
@@ -329,7 +329,7 @@ pub fn calculate_password_2(input: &mut dyn std::io::BufRead) -> u32 {
         .fold(DialAndCount::default(), |dial_and_count, line| {
             let line = line.expect("failed to read line");
             let rotation = line.parse::<Rotation>().expect("failed to parse rotation");
-            return dial_and_count.rotate(rotation);
+            dial_and_count.rotate(rotation)
         })
         .count
 }
