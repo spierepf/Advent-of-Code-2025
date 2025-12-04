@@ -12,4 +12,9 @@ name = "lobby"
 name = "lobby_2"
 
 [dev-dependencies]
+criterion = { version = "0.8.0", features = ["html_reports"] }
 toolbox = { path = "../toolbox" }
+
+[[bench]]
+name = "bench_lobby_2"
+harness = false

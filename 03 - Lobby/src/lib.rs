@@ -90,3 +90,39 @@ fn we_can_calculate_total_joltage_of_a_series_of_banks() {
         3121910778619
     );
 }
+// jolts[0] = [  9   8   7   6   5   4   3   2   1   1   1   1   1   1   1 ]
+// jolts[1] = [ 98  87  76  65  54  43  32  21  11  11  11  11  11  11   . ]
+// jolts[2] = [987 876 765 654 543 432 321 211 111 111 111 111 111   .   . ]
+
+pub fn max_joltage_dp(bank: &str, connection_count: usize) -> u64 {
+    let mut base = bank.chars().map(|c| c.to_digit(10).unwrap() as u64).collect::<Vec<_>>();
+    let mut table = base.clone();
+    for c in 1..connection_count {
+        for i in 0..table.len()-c {
+            base[i] *= 10;
+            table[i] = base[i] + table[i+1..table.len()+1-c].iter().copied().max().unwrap_or_default();
+        }
+    }
+    table[..table.len()+1-connection_count].iter().copied().max().unwrap_or_default()
+}
+
+#[test]
+fn we_can_find_the_max_joltage_of_a_bank_with_dp() {
+    assert_eq!(max_joltage_dp("1", 1), 1);
+    assert_eq!(max_joltage_dp("2", 1), 2);
+    assert_eq!(max_joltage_dp("12", 2), 12);
+    assert_eq!(max_joltage_dp("12", 1), 2);
+    assert_eq!(max_joltage_dp("21", 1), 2);
+    assert_eq!(max_joltage_dp("213", 2), 23);
+    assert_eq!(max_joltage_dp("2113", 2), 23);
+    assert_eq!(max_joltage_dp("987654321111111", 2), 98);
+    assert_eq!(max_joltage_dp("811111111111119", 2), 89);
+    assert_eq!(max_joltage_dp("234234234234278", 2), 78);
+    assert_eq!(max_joltage_dp("818181911112111", 2), 92);
+    assert_eq!(max_joltage_dp("987654321111111", 3), 987);
+    assert_eq!(max_joltage_dp("987654321111111", 12), 987654321111);
+    assert_eq!(max_joltage_dp("811111111111119", 12), 811111111119);
+    assert_eq!(max_joltage_dp("234234234234278", 12), 434234234278);
+    assert_eq!(max_joltage_dp("818181911112111", 12), 888911112111);
+}
+
