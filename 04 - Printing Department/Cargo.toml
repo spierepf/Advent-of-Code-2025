@@ -1,0 +1,15 @@
+[package]
+name = "printing_department"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[[bin]]
+name = "printing_department"
+
+[[bin]]
+name = "printing_department_2"
+
+[dev-dependencies]
+toolbox = { path = "../toolbox" }
