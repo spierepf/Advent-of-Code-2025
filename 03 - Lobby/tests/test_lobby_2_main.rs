@@ -1,6 +1,13 @@
 const EXECUTABLE_UNDER_TEST: &str = toolbox::binary_path!("lobby_2");
 
-const TEST_CASES: &[(&str, &str)] = &[("", "Hello, world!\n")];
+const TEST_CASES: &[(&str, &str)] = &[
+    ("", "0\n"),
+    ("987654321111111\n", "987654321111\n"),
+    (
+        "987654321111111\n811111111111119\n234234234234278\n818181911112111\n",
+        "3121910778619\n",
+    ),
+];
 
 #[test]
 fn test_that_the_executable_exists() {
