@@ -12,4 +12,9 @@ name = "printing_department"
 name = "printing_department_2"
 
 [dev-dependencies]
+criterion = { version = "0.8.0", features = ["html_reports"] }
 toolbox = { path = "../toolbox" }
+
+[[bench]]
+name = "bench_subtract_rolls_until_complete"
+harness = false

@@ -341,11 +341,14 @@ fn test_cell_set_can_subtract_rolls() {
 pub fn subtract_rolls_until_complete(mut rolls: CellSet) -> usize {
     let mut total_removed: usize = 0;
 
-    let mut removed_count: usize = rolls.count_accessible_rolls();
-    while removed_count > 0 {
+    loop {
+        let accessible_rolls = rolls.accessible_rolls().collect::<CellSet>();
+        let removed_count = accessible_rolls.cells.len();
+        if removed_count == 0 {
+            break;
+        }
+        rolls = rolls.subtract_rolls(accessible_rolls);
         total_removed += removed_count;
-        rolls = rolls.subtract_rolls(rolls.accessible_rolls());
-        removed_count = rolls.count_accessible_rolls();
     }
 
     total_removed
