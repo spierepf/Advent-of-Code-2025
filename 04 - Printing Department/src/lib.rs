@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use std::str::FromStr;
 
 #[derive(Copy, Clone, PartialEq, Debug, Hash, Eq)]
@@ -171,7 +171,7 @@ impl FromStr for CellSet {
 }
 
 impl IntoIterator for CellSet {
-    type IntoIter = std::collections::hash_set::IntoIter<Cell>;
+    type IntoIter = hashbrown::hash_set::IntoIter<Cell>;
     type Item = Cell;
     fn into_iter(self) -> Self::IntoIter {
         self.cells.into_iter()
