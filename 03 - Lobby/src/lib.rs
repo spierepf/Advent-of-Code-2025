@@ -95,15 +95,27 @@ fn we_can_calculate_total_joltage_of_a_series_of_banks() {
 // jolts[2] = [987 876 765 654 543 432 321 211 111 111 111 111 111   .   . ]
 
 pub fn max_joltage_dp(bank: &str, connection_count: usize) -> u64 {
-    let mut base = bank.chars().map(|c| c.to_digit(10).unwrap() as u64).collect::<Vec<_>>();
+    let mut base = bank
+        .chars()
+        .map(|c| c.to_digit(10).unwrap() as u64)
+        .collect::<Vec<_>>();
     let mut table = base.clone();
     for c in 1..connection_count {
-        for i in 0..table.len()-c {
+        for i in 0..table.len() - c {
             base[i] *= 10;
-            table[i] = base[i] + table[i+1..table.len()+1-c].iter().copied().max().unwrap_or_default();
+            table[i] = base[i]
+                + table[i + 1..table.len() + 1 - c]
+                    .iter()
+                    .copied()
+                    .max()
+                    .unwrap_or_default();
         }
     }
-    table[..table.len()+1-connection_count].iter().copied().max().unwrap_or_default()
+    table[..table.len() + 1 - connection_count]
+        .iter()
+        .copied()
+        .max()
+        .unwrap_or_default()
 }
 
 #[test]
@@ -125,4 +137,3 @@ fn we_can_find_the_max_joltage_of_a_bank_with_dp() {
     assert_eq!(max_joltage_dp("234234234234278", 12), 434234234278);
     assert_eq!(max_joltage_dp("818181911112111", 12), 888911112111);
 }
-
