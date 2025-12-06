@@ -7,5 +7,6 @@ members = [
     "03 - Lobby",
     "04 - Printing Department",
     "05 - Cafeteria",
+    "06 - Trash Compactor",
     "toolbox",
 ]
