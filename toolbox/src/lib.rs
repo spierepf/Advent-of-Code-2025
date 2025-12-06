@@ -32,3 +32,27 @@ pub fn invoke_executable(path: &str, input: &str) -> String {
 
     child_output
 }
+
+pub fn read_to_string(input: &mut dyn Read) -> Result<String, std::io::Error> {
+    let mut buf = String::new();
+    input.read_to_string(&mut buf)?;
+    Ok(buf)
+}
+
+#[test]
+fn test_we_can_read_to_a_string() {
+    assert_eq!(read_to_string(&mut std::io::Cursor::new(b"")).unwrap(), "");
+    assert_eq!(
+        read_to_string(&mut std::io::Cursor::new(b"Hello, World!")).unwrap(),
+        "Hello, World!"
+    );
+
+    struct ReadFailer;
+    impl Read for ReadFailer {
+        fn read(&mut self, _: &mut [u8]) -> Result<usize, std::io::Error> {
+            Err(std::io::Error::new(std::io::ErrorKind::Other, ""))
+        }
+    }
+
+    assert!(read_to_string(&mut ReadFailer).is_err());
+}

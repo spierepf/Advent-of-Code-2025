@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+toolbox = { path = "../toolbox" }
 
 [[bin]]
 name = "cafeteria"
 
 [[bin]]
 name = "cafeteria_2"
-
-[dev-dependencies]
-toolbox = { path = "../toolbox" }
+#
+#[dev-dependencies]
+#toolbox = { path = "../toolbox" }
