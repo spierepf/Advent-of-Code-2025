@@ -12,17 +12,7 @@ impl ProductIdRangeList {
     pub fn contains(&self, id: ProductId) -> bool {
         self.ranges.iter().any(|r| r.contains(id))
     }
-    /*
-    given a new_product_id_range
-    find all existing ranges with which it overlaps called overlapping_ranges
-    merge new_product_id_range and ovelapping_ranges
-    */
 
-    /*
-    given a new_product_id_range
-    find the first overlapping range (if none, just add new to list)
-    remove it from ranges, combine it with new_product_id_range, and thats now new_product_id_range, go to top
-     */
     pub fn total_count(&self) -> ProductCount {
         self.ranges
             .iter()
