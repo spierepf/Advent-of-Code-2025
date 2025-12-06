@@ -1,6 +1,6 @@
 use crate::product_id_list::ParseProductIdListError;
 use crate::product_id_range_list::ParseProductIdRangeListError;
-use crate::{ProductIdList, ProductIdRangeList};
+use crate::{ProductCount, ProductIdList, ProductIdRangeList};
 use std::str::FromStr;
 
 #[derive(Debug, Default, PartialEq)]
@@ -15,6 +15,10 @@ impl Input {
             .into_iter()
             .filter(|&product_id| self.fresh_product_ranges.contains(product_id))
             .count()
+    }
+
+    pub fn count_total_fresh_product_ids(&self) -> ProductCount {
+        self.fresh_product_ranges.total_count()
     }
 }
 
@@ -81,12 +85,32 @@ fn we_can_read_our_input_from_a_buf_read() {
 }
 
 #[test]
-fn input_can_count_the_fresh_products() {
+fn input_can_count_the_fresh_available_products() {
     assert_eq!(Input::default().count_fresh_products(), 0);
     assert_eq!(
         Input::from_str("3-5\n10-14\n16-20\n12-18\n\n1\n5\n8\n11\n17\n32\n")
             .unwrap()
             .count_fresh_products(),
         3
+    );
+}
+
+#[test]
+fn input_can_count_the_total_fresh_product_ids() {
+    assert_eq!(
+        Input::default().count_total_fresh_product_ids(),
+        ProductCount(0)
+    );
+    assert_eq!(
+        Input::from_str("3-5\n\n")
+            .unwrap()
+            .count_total_fresh_product_ids(),
+        ProductCount(3)
+    );
+    assert_eq!(
+        Input::from_str("3-5\n10-14\n16-20\n12-18\n\n1\n5\n8\n11\n17\n32\n")
+            .unwrap()
+            .count_total_fresh_product_ids(),
+        ProductCount(14)
     );
 }

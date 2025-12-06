@@ -1,6 +1,6 @@
-use crate::ProductId;
 use crate::ProductIdRange;
 use crate::product_id_range::ParseProductIdRangeError;
+use crate::{ProductCount, ProductId};
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Default)]
@@ -12,6 +12,66 @@ impl ProductIdRangeList {
     pub fn contains(&self, id: ProductId) -> bool {
         self.ranges.iter().any(|r| r.contains(id))
     }
+    /*
+    given a new_product_id_range
+    find all existing ranges with which it overlaps called overlapping_ranges
+    merge new_product_id_range and ovelapping_ranges
+    */
+
+    /*
+    given a new_product_id_range
+    find the first overlapping range (if none, just add new to list)
+    remove it from ranges, combine it with new_product_id_range, and thats now new_product_id_range, go to top
+     */
+    pub fn total_count(&self) -> ProductCount {
+        self.ranges
+            .iter()
+            .fold(ProductCount::default(), |partial_sum, range| {
+                partial_sum + range.count()
+            })
+    }
+}
+
+impl FromIterator<ProductIdRange> for ProductIdRangeList {
+    fn from_iter<T: IntoIterator<Item = ProductIdRange>>(iter: T) -> Self {
+        let mut ranges: Vec<ProductIdRange> = vec![];
+
+        for new_product_id_range in iter {
+            let (overlapping, mut non_overlapping) = ranges
+                .iter()
+                .cloned()
+                .partition::<Vec<_>, _>(|r| r.overlaps(&new_product_id_range));
+            let combined = overlapping
+                .iter()
+                .fold(new_product_id_range, |r1, r2| r1.merge(r2));
+
+            non_overlapping.push(combined);
+            ranges = non_overlapping;
+        }
+
+        Self { ranges }
+    }
+}
+
+#[test]
+fn a_product_id_range_list_can_count_how_many_ids_are_in_its_ranges() {
+    assert_eq!(ProductIdRangeList::default().total_count(), ProductCount(0));
+    assert_eq!(
+        ProductIdRangeList::from_str("3-5").unwrap().total_count(),
+        ProductCount(3)
+    );
+    assert_eq!(
+        ProductIdRangeList::from_str("3-5\n10-14\n16-20")
+            .unwrap()
+            .total_count(),
+        ProductCount(13)
+    );
+    assert_eq!(
+        ProductIdRangeList::from_str("3-5\n10-14\n16-20\n12-18")
+            .unwrap()
+            .total_count(),
+        ProductCount(14)
+    );
 }
 
 #[derive(Debug, PartialEq)]
@@ -26,20 +86,10 @@ impl From<ParseProductIdRangeError> for ParseProductIdRangeListError {
 impl FromStr for ProductIdRangeList {
     type Err = ParseProductIdRangeListError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self {
-            ranges: s
-                .lines()
-                .map(<ProductIdRange as FromStr>::from_str)
-                .collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-impl FromIterator<ProductIdRange> for ProductIdRangeList {
-    fn from_iter<T: IntoIterator<Item = ProductIdRange>>(iter: T) -> Self {
-        Self {
-            ranges: Vec::<ProductIdRange>::from_iter(iter),
-        }
+        s.lines()
+            .map(<ProductIdRange>::from_str)
+            .map(|res| res.map_err(|_| ParseProductIdRangeListError))
+            .collect::<Result<Self, _>>()
     }
 }
 

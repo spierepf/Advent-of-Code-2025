@@ -1,8 +1,15 @@
+use crate::ProductCount;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
-#[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Eq)]
 pub struct ProductId(pub u64);
+
+impl ProductId {
+    pub fn count_product_ids_up_to_and_including(self, product: ProductId) -> ProductCount {
+        ProductCount(self.0.abs_diff(product.0) + 1)
+    }
+}
 
 #[test]
 fn test_can_compare_two_product_ids() {
@@ -34,4 +41,20 @@ fn test_can_parse_a_product_id_from_str() {
     assert!("q".parse::<ProductId>().is_err());
     assert!("1q".parse::<ProductId>().is_err());
     assert!("-2".parse::<ProductId>().is_err());
+}
+
+#[test]
+fn test_we_can_count_the_ids_between_two_product_ids_inclusive() {
+    assert_eq!(
+        ProductId(1).count_product_ids_up_to_and_including(ProductId(1)),
+        ProductCount(1)
+    );
+    assert_eq!(
+        ProductId(3).count_product_ids_up_to_and_including(ProductId(5)),
+        ProductCount(3)
+    );
+    assert_eq!(
+        ProductId(5).count_product_ids_up_to_and_including(ProductId(3)),
+        ProductCount(3)
+    );
 }
