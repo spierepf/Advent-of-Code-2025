@@ -16,7 +16,7 @@ fn test_that_the_executable_exists() {
 }
 
 #[test]
-fn test_that_the_executable_processes_the_rotations_and_outputs_the_passcode() {
+fn test_that_the_executable_processes_the_input_and_produces_the_output() {
     for &(input, expected_result) in TEST_CASES {
         let child_output = toolbox::invoke_executable(EXECUTABLE_UNDER_TEST, input);
         assert_eq!(child_output, expected_result);
