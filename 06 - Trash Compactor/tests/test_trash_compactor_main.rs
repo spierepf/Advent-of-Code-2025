@@ -1,6 +1,8 @@
+use trash_compactor::SAMPLE_INPUT;
+
 const EXECUTABLE_UNDER_TEST: &str = toolbox::binary_path!("trash_compactor");
 
-const TEST_CASES: &[(&str, &str)] = &[(trash_compactor::SAMPLE_INPUT, "4277556\n")];
+const TEST_CASES: &[(&str, &str)] = &[(SAMPLE_INPUT, "4277556\n")];
 
 #[test]
 fn test_that_the_executable_exists() {
