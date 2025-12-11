@@ -285,3 +285,130 @@ fn we_can_do_our_homework() {
         4277556
     );
 }
+
+impl Homework {
+    pub fn parse_v2(s: &str) -> anyhow::Result<Self> {
+        let mut lines = s.lines();
+        let operator_line = lines.next_back().unwrap();
+
+        let operators = operator_line
+            .split(' ')
+            .filter(|col| !col.is_empty())
+            .map(|col| col.parse::<Operator>().unwrap());
+
+        let mut operand_rows = lines
+            .map(|l| l.chars().collect::<Vec<char>>())
+            .collect::<Vec<_>>();
+        let max_len = operand_rows
+            .iter()
+            .map(|r| r.len())
+            .max()
+            .unwrap_or_default();
+
+        for operand_row in &mut operand_rows {
+            operand_row.resize_with(max_len, || ' ');
+        }
+
+        let operand_cols = operand_rows.transpose();
+
+        let operand_strings_all_together = operand_cols
+            .into_iter()
+            .map(|c| c.into_iter().collect::<String>())
+            .collect::<Vec<String>>();
+        let problems = operand_strings_all_together
+            .split(|x| x.trim().is_empty())
+            .map(|x| {
+                x.iter()
+                    .map(|o| o.trim().parse().unwrap())
+                    .rev()
+                    .collect::<Vec<u64>>()
+            })
+            .rev()
+            .zip(operators.rev())
+            .map(|(operands, operator)| Problem { operands, operator })
+            .collect::<Vec<_>>();
+
+        Ok(Homework { problems })
+    }
+}
+
+#[test]
+fn we_can_parse_an_input_v2() {
+    assert_eq!(
+        Homework::parse_v2("2\n3\n*").unwrap(),
+        Homework {
+            problems: vec![Problem {
+                operands: vec![23],
+                operator: Operator::Product
+            }]
+        }
+    );
+
+    assert_eq!(
+        Homework::parse_v2(SAMPLE_INPUT).unwrap(),
+        Homework {
+            problems: vec![
+                Problem {
+                    operands: vec![4, 431, 623],
+                    operator: Operator::Sum,
+                },
+                Problem {
+                    operands: vec![175, 581, 32],
+                    operator: Operator::Product,
+                },
+                Problem {
+                    operands: vec![8, 248, 369],
+                    operator: Operator::Sum,
+                },
+                Problem {
+                    operands: vec![356, 24, 1],
+                    operator: Operator::Product,
+                },
+            ]
+        }
+    );
+
+    assert_eq!(
+        Homework::parse_v2("1\n+").unwrap(),
+        Homework {
+            problems: vec![Problem {
+                operands: vec![1],
+                operator: Operator::Sum
+            }]
+        }
+    );
+
+    assert_eq!(
+        Homework::parse_v2("2\n+").unwrap(),
+        Homework {
+            problems: vec![Problem {
+                operands: vec![2],
+                operator: Operator::Sum
+            }]
+        }
+    );
+    assert_eq!(
+        Homework::parse_v2("2\n*").unwrap(),
+        Homework {
+            problems: vec![Problem {
+                operands: vec![2],
+                operator: Operator::Product
+            }]
+        }
+    );
+    assert_eq!(
+        Homework::parse_v2("1 2\n+ *").unwrap(),
+        Homework {
+            problems: vec![
+                Problem {
+                    operands: vec![2],
+                    operator: Operator::Product
+                },
+                Problem {
+                    operands: vec![1],
+                    operator: Operator::Sum
+                },
+            ]
+        }
+    );
+}
