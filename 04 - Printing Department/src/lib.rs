@@ -173,9 +173,27 @@ impl FromStr for CellSet {
 impl IntoIterator for CellSet {
     type IntoIter = hashbrown::hash_set::IntoIter<Cell>;
     type Item = Cell;
+
     fn into_iter(self) -> Self::IntoIter {
         self.cells.into_iter()
     }
+}
+
+#[test]
+fn test_cell_set_into_iter_returns_an_iterator_containing_the_elements_of_the_vector() {
+    assert_eq!(CellSet::from_iter([]).into_iter().count(), 0);
+    assert_eq!(
+        CellSet::from_iter([Cell { row: 0, col: 0 }])
+            .into_iter()
+            .count(),
+        1
+    );
+    assert_eq!(
+        CellSet::from_iter([Cell { row: 0, col: 0 }, Cell { row: 0, col: 2 }])
+            .into_iter()
+            .collect::<CellSet>(),
+        CellSet::from_iter([Cell { row: 0, col: 0 }, Cell { row: 0, col: 2 }])
+    );
 }
 
 #[test]
@@ -343,11 +361,15 @@ pub fn subtract_rolls_until_complete(mut rolls: CellSet) -> usize {
 
     loop {
         let accessible_rolls = rolls.accessible_rolls().collect::<CellSet>();
-        let removed_count = accessible_rolls.cells.len();
+
+        let count_before = rolls.cells.len();
+        rolls = rolls.subtract_rolls(accessible_rolls);
+        let count_after = rolls.cells.len();
+
+        let removed_count = count_before.abs_diff(count_after);
         if removed_count == 0 {
             break;
         }
-        rolls = rolls.subtract_rolls(accessible_rolls);
         total_removed += removed_count;
     }
 
