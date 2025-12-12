@@ -8,5 +8,6 @@ members = [
     "04 - Printing Department",
     "05 - Cafeteria",
     "06 - Trash Compactor",
+    "11 - Reactor",
     "toolbox",
 ]
