@@ -1,6 +1,6 @@
 const EXECUTABLE_UNDER_TEST: &str = toolbox::binary_path!("reactor_2");
 
-const TEST_CASES: &[(&str, &str)] = &[("", "Hello, world!\n")];
+const TEST_CASES: &[(&str, &str)] = &[(reactor::SAMPLE_INPUT2, "2\n")];
 
 #[test]
 fn test_that_the_executable_exists() {

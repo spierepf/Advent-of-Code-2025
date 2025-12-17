@@ -56,3 +56,7 @@ fn test_we_can_read_to_a_string() {
 
     assert!(read_to_string(&mut ReadFailer).is_err());
 }
+
+pub fn read_stdin_to_string() -> String {
+    read_to_string(&mut std::io::stdin().lock()).unwrap()
+}
